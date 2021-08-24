@@ -1,0 +1,53 @@
+'!TITLE "Robot program"
+#Include "GLOBAL_VAR_TAB.h"
+#Include "VAR_TAB.h"
+#Include "DIO_TAB.h"
+#Include "HomingRobot1.pcs" 
+
+Sub Check()
+
+	TakeArm Keep = 0
+    Call AreaCommunication()
+
+End Sub
+
+
+Sub SpeedSetting()
+
+	'HighSpeed Setting
+	Extspeed I[ExternalSpeed]
+
+    Force_Control = F[HighSpeed_Force_Control]       
+
+End Sub
+
+
+Sub AreaCommunication()
+
+	If IO[Robot1_SafeArea] = 1 Then
+		Check_Area_1 = Timer
+		checkbit_1 = 1
+	ElseIf(IO[Robot1_SafeArea] = 0) Then
+		checkbit_1 = 0
+	End If
+    
+	If IO[Robot1_CollisionArea] = 1 Then
+		Check_Area_2 = Timer
+		checkbit_2 = 1
+	ElseIf(IO[Robot1_CollisionArea] = 0) Then
+		checkbit_2 = 0
+	End If
+''''''''''''''''''''''''''''''''''''''''''''''''
+	If ((Timer - Check_Area_1 > 200) And (checkbit_1 = 1)) Then
+		PrintMsg "Area1 response-bit not received"
+		I[StateFinished] = -2
+		checkbit_1 = 0
+	End If
+
+	If ((Timer - Check_Area_2 > 200) And (checkbit_2 = 1)) Then
+		PrintMsg "Area1 response-bit not received"
+		I[StateFinished] = -2
+		checkbit_2 = 0
+	End If
+
+End Sub 

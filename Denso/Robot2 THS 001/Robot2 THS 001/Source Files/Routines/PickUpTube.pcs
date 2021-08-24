@@ -1,0 +1,64 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Sub Main()
+
+	TakeArm Keep = 0
+
+	I[StateFinished] = 0
+
+	Call Check()
+
+	Select Case I[RowCount]
+
+		Case 0, 2 'Rack 1
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet1_P1], P[Pallet1_P2], P[Pallet1_P3], P[Pallet1_P4], I[TubeIndex], 1 )
+		Case 1, 3 'Rack 1
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet1_P11], P[Pallet1_P12], P[Pallet1_P13], P[Pallet1_P14],I[TubeIndex], 1 )
+		Case 4, 6 'Rack 2
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet2_P21], P[Pallet2_P22], P[Pallet2_P23], P[Pallet2_P24],I[TubeIndex], 1 )
+		Case 5, 7 'Rack 2
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet2_P31], P[Pallet2_P32], P[Pallet2_P33], P[Pallet2_P34],I[TubeIndex], 1 )
+		Case 8, 10 'Rack 3
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet3_P41], P[Pallet3_P42], P[Pallet3_P43], P[Pallet3_P44],I[TubeIndex], 1 )
+		Case 9, 11 'Rack 3
+			P[GloPickFromRack] = Pallet.CalcPos( 4, 4, 0, P[Pallet3_P51], P[Pallet3_P52], P[Pallet3_P53], P[Pallet3_P54],I[TubeIndex], 1 )
+	End Select
+
+	'Do middle pos between last deliver in rack one, And first pick in rack two.
+	If IO[AreaRack3] Then
+		Move p, @p P[Middle_pos_2Rack], S = 100
+	End If
+
+	'Rack always same height
+	Letz P[GloPickFromRack] = I[Rack_Height]
+
+	'RZ must be at same position, Gripper only fit in rack one way
+	LetRZ P[GloPickFromRack] = I[RZ_For_Racks]
+
+	'Go to position 
+	Approach p, P[GloPickFromRack], 50, S = I[GoTo_Speed], Next
+	Arrive 100
+
+	'This was @E without a NEXT
+	Move L, @p P[GloPickFromRack], S = I[CarefulZ_Speed], Next
+	Arrive 100
+
+	'Grip And Depart from position
+	Reset IO[Cap_Gripper] 
+
+	Delay 50
+
+	Depart L, @p 130, S = I[GoTo_Speed], Next	
+	Arrive 100	    
+
+
+
+	GiveArm
+
+	I[StateFinished] = 1
+
+End Sub

@@ -1,0 +1,26 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+
+Dim CheckTube As Integer
+
+Sub Main()
+
+    I[StateFinished] = 0
+
+    CheckTube = 0
+    
+    'Trigger camera
+    Set IO[CognexTrigger]
+    Delay 20
+    Reset IO[CognexTrigger]
+    Delay 400
+    
+	If IO[CognexCap] = 1 Then 
+        CheckTube = 1    
+    End If
+
+    I[StateFinished] = CheckTube
+    
+End Sub

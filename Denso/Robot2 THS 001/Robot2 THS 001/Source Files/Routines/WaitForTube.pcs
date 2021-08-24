@@ -1,0 +1,20 @@
+'!TITLE "Robot program"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Sub Main
+
+	Motor On
+	TakeArm Keep = 0
+	
+	SetArea 1
+	SetArea 2
+	
+	I[StateFinished] = 0
+
+	Call AreaCommunication()
+
+	I[StateFinished] = 1
+
+End Sub

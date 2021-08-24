@@ -1,0 +1,13 @@
+'!TITLE "Robot program"
+#Include "\VAR_TAB.h"
+
+Sub Main()
+
+	Motor On
+	Delay 200
+
+	I[StateFinished] = 10
+
+	Delay 200
+
+End Sub

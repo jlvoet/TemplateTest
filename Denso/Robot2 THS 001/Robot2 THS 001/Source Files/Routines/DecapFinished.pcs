@@ -1,0 +1,19 @@
+'!TITLE "Robot program"
+
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+
+Sub Main()
+
+	TakeArm Keep = 0
+
+	'Move to safe pos 
+	Move p, @p P[InitSafe_pos], S = I[GoTo_Speed]
+
+	I[StateFinished] = 1
+
+	PrintMsg "Finished",0
+
+	GiveArm
+
+End Sub

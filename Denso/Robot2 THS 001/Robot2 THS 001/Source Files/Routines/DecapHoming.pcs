@@ -1,0 +1,33 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\HomingRobot1.pcs" 
+#Include "\Checks.pcs"
+
+Sub Main()
+
+	Motor On
+	TakeArm Keep = 0
+
+	I[StateFinished] = 0
+
+	SetArea 1
+	SetArea 2 
+
+	Call Check()
+	Call SpeedSetting()
+
+	'Initialize And Move to start position
+	Call HomingRobot1() 
+	Set IO[Cap_Gripper]
+
+	'Trigger camera
+    Set IO[CognexTrigger]
+    Delay 20
+    Reset IO[CognexTrigger]
+	GiveArm    
+
+	I[StateFinished] = 1     
+
+End Sub

@@ -1,0 +1,73 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Dim cappedTube As Integer
+
+Sub Main()
+	
+	TakeArm Keep = 0
+	
+	I[StateFinished] = 0
+	cappedTube = 0
+	
+	Call Check()
+	
+	Reset IO[Tube_Decap_Gripper] 
+	
+	'Rotate for capping
+	Approach p, P[Clamp_pos_Cap], @p 50, S = I[GoTo_Speed] 
+	Arrive 100
+	
+	DriveA(4, 360), S = I[GoTo_Speed], Next
+
+	'Negative Depart to Move the robot down
+	Depart p, @p - 47, S = I[GoTo_Speed] 
+	
+	Reset IO[Cap_Gripper] 
+	Delay 50
+	
+	DriveA(4, -340), S = I[Cap_Speed], Next
+	'Drive(4, - 700), S = I[Cap_Speed], Next
+	Arrive 40
+	Call Wait_For_MotionComplete()
+	
+	'Unclamp
+	Set IO[Tube_Decap_Gripper] 
+	Delay 100
+
+	'Depart positive to Move straight up again And remove the Arrive 100 because Next is not given
+	Depart L, @p 60, S = I[GoTo_Speed] 
+	
+	GiveArm
+	
+	If cappedTube = 1 Then
+		I[StateFinished] = 1
+	Else
+		I[StateFinished] = - 1
+	End If
+	
+End Sub
+
+
+Sub Wait_For_MotionComplete()
+	'Routine to check force while rotating
+	F[Force_Capping_LIVE] = 0
+	Do
+		F[Force_Capping_LIVE] = GetSrvJntData(4, 4)
+		PrintMsg F[Force_Capping_LIVE] 
+		
+		If F[Force_Capping_LIVE] > F[HighSpeed_Force_Control] Then
+			cappedTube = 1
+			
+			Set IO[Tube_Decap_Gripper] 
+			PrintMsg F[Force_Capping_LIVE] 
+			MotionSkip
+			Exit Sub
+		End If
+		Delay 20
+	Loop Until MotionComplete
+	
+End Sub

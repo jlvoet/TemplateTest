@@ -1,0 +1,17 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Sub Main()
+
+	I[StateFinished] = 0
+
+	Call Check()
+
+	Wait IO[DispenseArmRightOrHome] = False
+
+	I[StateFinished] = 1
+
+End Sub
