@@ -1,0 +1,22 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Sub Main()
+
+	TakeArm Keep = 0
+
+	I[StateFinished] = 0
+
+	Call Check()
+
+	Depart L, @p 35, S = I[CarefulZ_Speed]
+	Move L, @p P[WaitPos], S = I[GoTo_Speed]
+
+	GiveArm	
+
+	I[StateFinished] = 1
+
+End Sub

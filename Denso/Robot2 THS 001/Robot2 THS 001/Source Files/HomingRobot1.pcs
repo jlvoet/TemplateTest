@@ -1,0 +1,84 @@
+'!TITLE "Robot program"
+#Include "VAR_TAB.h"
+#Include "DIO_TAB.h"
+
+Dim CurrentPosition As Position
+Dim Homing As Integer
+
+Sub Main()
+
+	TakeArm Keep = 1
+	
+	SetArea 3
+
+	Set IO[Tube_Decap_Gripper] 
+	Set IO[Cap_Gripper] 
+	CurrentPosition = CurPos
+	'=================================================================================================================
+	' Z Goiong up
+	'=================================================================================================================	
+	
+	Drive(3, (I[MAX_Z_Height] - (Joint(3, CurJnt))))
+
+	'=================================================================================================================	
+	' If Robot 1 is above rack 3 or between rack 2 and 3	
+	'=================================================================================================================	
+	If IO[AreaRack3] Or IO[AreaBetweenRack2And3] Then
+		
+		Move P, @p P[InitSafe_pos], S = I[Initialize_Speed] 
+		Homing = 1
+		
+	End If
+
+	'=================================================================================================================	
+	' If Robot 1 is out of Area
+	'=================================================================================================================	
+	If IO[Robot2_SafeArea] = 0 And IO[Robot2_Area_Between_Robot] = 0 And IO[Robot_2_CollisionArea] = 0 And IO[Robot_Wait_Area] = 0 Then
+		
+		PrintMsg "Please Move Robot 1 to Area1/Rack Or Area2/Tube_Decap_Gripper", 0
+		Wait IO[Robot2_SafeArea] Or IO[Robot_2_CollisionArea] Or IO[Robot_Wait_Area] 
+		
+	End If
+	
+	'=================================================================================================================	
+	' Go to InitSafe_Pos If Robot is in Collision Area
+	'=================================================================================================================	
+	If ((IO[Robot_2_CollisionArea] Or IO[Robot_Wait_Area] ) And (Fig(CurPos) = 1 Or Fig(CurPos) = 17 Or Fig(CurPos) = 33)) Then
+		
+		Move P, @P P[WaitPos], S = I[Initialize_Speed], Next
+		Drive(1, 45), S = I[Initialize_Speed] 
+		Move P, @p P[InitSafe_pos], S = I[Initialize_Speed] 
+		Homing = 1
+		
+	End If
+	'=================================================================================================================	
+	' Go to InitSafe_Pos If Robot is in Safe Area, from Lefty Or Righty mode
+	'=================================================================================================================	
+	If ((IO[Robot2_SafeArea] Or IO[Robot2_Area_Between_Robot] ) And (Fig(CurPos) = 1 Or Fig(CurPos) = 17 Or Fig(CurPos) = 33)) Then
+		
+		Move L, @P P[InitSafe_pos], S = I[Initialize_Speed] 
+		Homing = 1
+		
+	End If
+	'=================================================================================================================
+	If IO[Robot2_SafeArea] And Fig(CurPos) = 0 Or Fig(CurPos) = 16 Or Fig(CurPos) = 32 Then
+		
+		Move P, @p P[InitSafe_pos], S = I[Initialize_Speed] 
+		Homing = 1
+		
+	End If
+	
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Sub Main()
+
+	TakeArm Keep = 0
+
+	I[StateFinished] = 0
+
+	Call Check()
+	'Move to rack And release
+   	              
+	'Get last position pickup to deliver
+	GoBackToRack = P[GloPickFromRack]
+
+	'Safe entry between collision area And safe area
+	Approach p, P[Pallet1_P1], @p 124, S = I[GoTo_Speed]
+
+	'Rack always same height
+	LetRZ GoBackToRack = I[RZ_For_Racks]
+
+	'Going to deliverpoint
+	Approach p, GoBackToRack, @E 124, S = I[GoTo_Speed]
+	Move L, @E GoBackToRack, S = I[CarefulZ_Speed]
+	'Release robot gripper And Depart
+	Set IO[Cap_Gripper]
+	Delay 100
+	Depart L, @E 50, S = I[GoTo_Speed]
+
+	GiveArm  
+
+	I[StateFinished] = 1   
+	    
+End Sub

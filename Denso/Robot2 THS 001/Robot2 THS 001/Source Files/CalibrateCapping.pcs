@@ -1,0 +1,30 @@
+'!TITLE "Robot program"
+
+Sub Main()
+
+	TakeArm Keep = 0
+
+	Motor On
+
+	Dim currentsValue(1000) As Double
+	Dim index As Integer
+	Dim maxCurrent As Double
+
+	Index = 0
+
+	'Turn to absolute base position
+	DriveA(4,360), S = 100
+	'Turn 720 degrees And measure a list of currents during the movement
+	DriveA(4,-360), S = 50, Next
+
+	Do 
+        currentsValue(index) = GetSrvJntData(4, 4)
+		If maxCurrent < currentsValue(index) Then
+			maxCurrent = currentsValue(index)
+		End If
+
+		index = index + 1
+		Delay 50
+    Loop Until MotionComplete
+
+End Sub

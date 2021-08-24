@@ -1,0 +1,31 @@
+'!TITLE "Robot program"
+#Include "\GLOBAL_VAR_TAB.h"
+#Include "\VAR_TAB.h"
+#Include "\DIO_TAB.h"
+#Include "\Checks.pcs"
+
+Dim DecappedTube As Integer
+
+Sub Main()
+
+	TakeArm Keep = 0
+	I[StateFinished] = 0
+
+	Call Check()
+
+	'Clamp
+	DriveA(4, -360), S = I[GoTo_Speed]
+	Approach p, P[Clamp_pos_Decap], 55
+	Move p, @p P[Clamp_pos_Decap], S = I[GoTo_Speed], Next
+	Arrive 100
+
+	Reset IO[Tube_Decap_Gripper]
+	Delay 50
+
+	'Rotate for decapping	        
+	Drive(3, 8),(4, 650), S = I[GoTo_Speed]
+	GiveArm
+
+	I[StateFinished] = 1
+
+End Sub

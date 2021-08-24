@@ -1,0 +1,17 @@
+'!TITLE "Robot program"
+#Include "DIO_TAB.h"
+#Include "VAR_TAB.h"
+
+Sub Main()
+
+	Do
+		If IO[Robot1_CollisionArea] And IO[Robot_2_CollisionArea] Then
+			KillAll
+			PrintMsg "Please Move one of the Robots to a Safe Zone", 0
+		End If
+	Loop
+
+End Sub
+
+
+
